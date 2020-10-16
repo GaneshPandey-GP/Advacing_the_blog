@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block title %} {{posts.title}}|{{ block.super}}{% endblock %}
+
+{% block content %}
+{% load crispy_forms_tags %}
+<div class="row mb-5">
+  <div class="col-sm-6  col-sm-offset-4 mt-3 ">
+    {{posts.read_time}}
+    {% if posts.image %}
+    <img src="{{posts.image.url}}" class="img-thumbnail img-responsive" alt="Image">
+    {% endif %}
+    <h3>{{posts.title}} <small>{% if posts.draft %} <span style="color: red;">Draft</span>
+        {% endif %}{{posts.publish}}</small> </h3>
+    <h6>Author : {{posts.user.username}}</h6>
+    <small><strong>Read Time : {% if posts.reading_time <= 1 %} less then 1 minute {% else %} {{posts.reading_time}}
+        minutes {% endif %}</strong></small>
+
+    <p>
+    <div class="fb-like" data-href="{{request.build_absolute_uri}}" data-width="" data-layout="button_count"
+      data-action="like" data-size="small" data-share="true"></div>
+    </p>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="mark-content">{{posts.get_markdown}} </div>
+        <hr />
+        <br />
+        <!-- <div class="fb-comments" data-href="{{request.build_absolute_uri}}" data-numposts="5" data-width="100%"></div> -->
+      </div>
+    </div>
+    <!-- {{request.build_absolute_uri}} -->
+
+    <hr>
+    <button><a href="{{posts.get_Update_absoulte_url}}">Update</a></button>
+    <button><a href="{{posts.get_Delete_absoulte_url}}">Delete</a></button>
+
+    <div class="row mt-3 mb-3">
+
+      <h3>Comments({{comments.count}})</h3>
+
+      {% for comment in comments %}
+      <hr>
+      <div class="col-sm-12 mt-1">
+        <hr>
+        <blockquote class="blockquote">
+          <p class="mb-0">{{comment.content}}</p>
+          <footer class="blockquote-footer">via {{comment.user}} | {{comment.timestamp|timesince}} ago|
+            {% if comment.children.count > 0 %}{{comment.children.count }} Comment{% if comment.children.count > 1 %}s
+            {% endif %} {% endif %} | <a href="" class="comment-reply-btn">Reply</a>|
+            {% if request.user == comment.user %}<a href="{% url 'comment_delete' comment.id  %}">Delete |</a>{%endif%}
+            <a href="{% url 'thread' comment.id  %}">Thread</a></footer>
+
+          <div class="comment-reply" style="display:none">
+
+            {% for child_comment in comment.children %}
+            <hr>
+            <blockquote class="blockquote ml-5">
+              <p class="mb-0">{{child_comment.content}} </p>
+              <footer class="blockquote-footer">via {{child_comment.user}} | {{child_comment.timestamp|timesince}} ago
+                <a href="{% url 'comment_delete' child_comment.id  %}">Delete</a></footer>
+            </blockquote>
+
+            {% endfor %}
+
+
+            <h3>Reply:</h3>
+            {% if request.user.is_authenticated  %}
+            <form method="POST" action="">{% csrf_token %}
+              {{form|crispy}}
+              <input type="hidden" name="parent_id" value={{comment.id}}>
+              <input type="submit" value="Reply">
+            </form>
+            {% else %}
+            <p>You must <a href="{% url 'login' %}">Login</a> first to comment</p>
+            {% endif %}
+          </div>
+        </blockquote>
+        <hr>
+      </div>
+      <hr>
+      {% endfor %}
+      <div class="col-sm-12 mt-1">
+        <h3>Leave a Comment:</h3>
+        {% if request.user.is_authenticated  %}
+        <form method="POST" action="">{% csrf_token %}
+          {{form|crispy}}
+          <input type="submit" value="Add comment">
+        </form>
+        {% else %}
+        <h5>You must <a href="{% url 'login' %}">Login</a> first to comment</h5>
+        {% endif %}
+      </div>
+
+
+    </div>
+  </div>
+  {% endblock content  %}

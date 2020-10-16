@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %} {{posts.title}}|{{ block.super}}{% endblock %}
+
+{% block content %}
+{{object}}
+{% load crispy_forms_tags %}
+<div class="row mt-3 mb-3">
+    <div class="col-sm-8 mt-1">
+        <hr>
+        <blockquote class="blockquote">
+            <p class="mb-0">{{comment.content}}</p>
+            <footer class="blockquote-footer">via {{comment.user}} | {{comment.timestamp|timesince}} ago|
+                {% if comment.children.count > 0 %}{{comment.children.count }}
+                Comment{% if comment.children.count > 1 %}s
+                {% endif %} {% endif %} |
+            </footer>
+            <div>
+
+                {% for child_comment in comment.children %}
+                <hr>
+                <blockquote class="blockquote ml-5">
+                    <p class="mb-0">{{child_comment.content}} </p>
+                    <footer class="blockquote-footer">via {{child_comment.user}} | {{child_comment.timestamp|timesince}} ago
+                        {% if request.user == child_comment.user %}<a href="{% url 'comment_delete' comment.id  %}" >Delete</a>  {% endif%} 
+                    </footer>
+                </blockquote>
+                {% endfor %}
+
+
+
+                <h3>Reply:</h3>
+                <form method="POST" action="">{% csrf_token %}
+                    {{form|crispy}}
+                    <input type="hidden" name="parent_id" value={{comment.id}}>
+                    <input type="submit" value="Reply">
+                </form>
+            </div>
+        </blockquote>
+        <hr>
+    </div>
+    <hr>
+
+
+
+</div>
+
+{% endblock content  %}

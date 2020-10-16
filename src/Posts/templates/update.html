@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %} Update|{{ block.super}}{% endblock %}
+{% block head_extra %} {{form.media}} {% endblock %}
+<style>
+    .wmd-preview
+    {
+        display:none;
+       
+    }
+    h3
+    {
+        color: aqua;
+    }
+</style>
+{% block content %}
+
+{% load crispy_forms_tags %}
+<div class="row">
+   
+<div class="col-sm-6">
+  <h3>Preview</h3>
+  <div class="content-preview">
+    <h3 id="preview-title"></h3> 
+    <p id= "preview-content"></p>
+</div>
+</div>
+    <div class="col-sm-6   mt-3 ">
+        <h3>Update Your POst Here!!!</h3>
+        <form method="POST" action="" enctype="multipart/form-data">{% csrf_token %}
+            {{form|crispy}}
+            <input type="submit" value="Update">
+        </form>
+    </div>
+</div>
+{% endblock content %}

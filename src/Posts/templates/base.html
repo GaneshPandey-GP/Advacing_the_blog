@@ -1,0 +1,112 @@
+{% load static %}
+<html>
+
+<head>
+    <title> {% block title %} Try Django 3.0 {% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    {% block head_extra %} {% endblock %}
+
+    <script>
+        $(document).ready(function () {
+            $(".comment-reply-btn").click(function (event) {
+                event.preventDefault();
+                $(this).parent().next(".comment-reply").fadeToggle();
+            });
+        });
+    </script>
+
+</head> 
+
+<body>
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v8.0"
+        nonce="mCD31r8c"></script>
+    <div class="container">
+        {% include 'message.html' %}
+        <div class="container ml-auto">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item active"><a href="{%url 'home' %}">Home</a></li>
+                <li class='breadcrumb-item'><a href="">Posts</a></li>
+
+                <li class="breadcrumb-item"><a href="{% url 'register' %}">Register</a></li>
+                <li class="" style="margin-left:15rem;"><span><strong>Advacing the Blog</strong></span></li>
+                <li style="margin-left:10rem;"><strong>Welcome,  {{request.user.username}}</strong></li>
+                <li class="breadcrumb-item" style="margin-left:1rem;"><a href="{% url 'login' %}">Login</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'logout' %}">Logout</a></li>                      
+            </ul>
+
+            {% block content %}
+
+            {% endblock content %}
+        </div>
+    </div>
+
+    <script src="http://code.jquery.com/jquery-1.12.4.min.js"
+        integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/1.1.1/marked.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $(".mark-content").each(function () {
+                var content = $(this).text()
+                console.log(content)
+                var markedcontent = marked(content)
+                console.log(markedcontent)
+                $(this).html(markedcontent)
+            })
+            $(".mark-content img").each(function () {
+                $(this).addClass("img-fluid")
+            })
+            //preview-title
+            //preview-content
+            var titleItem = $("#id_title")
+
+            function setTitle(value) {
+                $("#preview-title").text(value)
+            }
+            setTitle(titleItem.val())
+            titleItem.keyup(function () {
+                var newContent = $(this).val()
+                setTitle(newContent)
+            })
+            var contentItem = $("#wmd-input-id_content")
+            function setContent(value) {
+                var markedcontent = marked(value)
+                $("#preview-content").html(markedcontent)
+                $("#preview-content img").each(function () {
+                    $(this).addClass("img-fluid")
+                })
+            }
+            setContent(contentItem.val())
+            contentItem.keyup(function () {
+                var newContent = $(this).val()
+                setContent(newContent)
+            })
+
+            //  $(".comment-reply-btn").click(function(event){
+            //     event.preventDefault();
+            //     $(this).next(".comment-reply").fadeToggle();
+            //   });
+
+            $(".comment-reply-btn").click(function () {
+                $(".comment-reply").fadeToggle();
+            });
+        })
+    </script>
+</body>
+
+</html>

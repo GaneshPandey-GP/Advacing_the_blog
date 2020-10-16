@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Home |{{ block.super}}{% endblock %}
+
+{% block content %}
+<div class="col-sm-8  col-sm-offset-3 mb-5">
+    <h3>{{title|upper}}</h3>
+    <form method="GET" action="" class="row">
+        <div class="col-sm-6">
+            <div class="input-group">
+                <input class="form-control" type="search" name='q' placeholder="Search" value="{{request.GET.q}}">
+                <span class="input-group-btn">
+                    <!-- <input class="btn btn-primary" type="submit" value="Search"> -->
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i>!</button>
+                </span>
+            </div>
+        </div>
+    </form>
+    {% for p in post %}
+    <div class="card-deck">
+        <div class="col-sm-12">
+            <div class="card mt-2">
+                {% if p.image %}
+                <img src="{{p.image.url}}" class="img-thumbnail img-responsive" alt="Image">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title"><a href="{{p.get_absoulte_url}}">{{p.title|upper}}</a>
+                        <small>{{p.publish}} </small> </h5>
+                    <h6>Author : {{p.user.username}}</h6>
+                    <div class="card-text">
+                        <div class="mark-content">{{p.get_markdown|truncatechars_html:75}} </div>
+                        <hr />
+                        <br />
+                    </div>
+                    <!-- <div class="mark-content"><p class=" ">{{p.content|truncatechars:120}}</p></div> -->
+                    <button class="btn btn-outline-info"><a href="{{p.get_absoulte_url}}">Read More</a></button>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">{{p.update}} </small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    {% endfor %}
+
+    <div class="pagination">
+        <span class="step-links">
+            {% if post.has_previous %}
+            <a href="?{{page_request_var}}=1 {% if request.GET.q %}&q={{request.GET.q}}{% endif %}  ">&laquo; first</a>
+            <a
+                href="?{{page_request_var}}={{ post.previous_page_number }}{% if request.GET.q %}&q={{request.GET.q}}{% endif %}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ post.number }} of {{ post.paginator.num_pages }}.
+            </span>
+
+            {% if post.has_next %}
+            <a
+                href="?{{page_request_var}}={{ post.next_page_number }}{% if request.GET.q %}&q={{request.GET.q}}{% endif %}">next</a>
+            <a
+                href="?{{page_request_var}}={{ post.paginator.num_pages }}{% if request.GET.q %}&q={{request.GET.q}}{% endif %}">last
+                &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+
+    {% endblock content %}

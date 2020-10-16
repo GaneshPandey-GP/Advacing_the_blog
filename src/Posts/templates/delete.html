@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %} Home |{{ block.super}}{% endblock %}
+{% block content %}
+<h3> {{title}}  Post </h3>
+
+<form method="POST" action="">{% csrf_token %} 
+    <div>Are you sure to delete this Post ?</div>
+    <a href="{% url 'home' %}">Cancel</a>
+    <button type="submit"> Delete</button>
+</form>
+{% endblock content %}
